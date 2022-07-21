@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="4ca83954-131f-4e1b-b0c5-4b9929c479f4" >
+		<http:listener-connection host="0.0.0.0" port="8089" />
+	</http:listener-config>
+	<flow name="mule_vieweventdataFlow" doc:id="bd6169ba-50fa-462b-901b-d001350b3b1b" >
+		<http:listener doc:name="GET/ViewData" doc:id="7a80b2b1-8a83-4a85-af0f-33415f9b8107" config-ref="HTTP_Listener_config" path="/ViewData" allowedMethods="GET">
+			<ee:repeatable-file-store-stream inMemorySize="1024" />
+		</http:listener>
+		<set-payload value="Hello Anil" doc:name="Hello" doc:id="e221694e-b4f2-4c20-b0aa-2d35c5f25f7d" />
+		<logger level="INFO" doc:name="Logger" doc:id="1e25586c-b056-4e50-8ba2-655b9d52246f" message="Welcome"/>
+	</flow>
+</mule>

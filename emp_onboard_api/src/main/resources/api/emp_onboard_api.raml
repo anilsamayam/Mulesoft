@@ -1,0 +1,128 @@
+#%RAML 1.0
+title: EMP_ONBOARD_API
+description: Employee OnBoarding API
+baseUri: https://localhost:8081/v1/emp
+/add-employee:
+  post:
+    body:
+      application/json:
+        examples:
+          {
+            "empid":200,
+            "empname":"Anil",
+            "status":"Active"
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "Status":200,
+                "message":"success"
+              }
+      500:
+          body:
+              application/json:
+                  example:
+                      {
+                        "status":500,
+                        "message":"Internal Server Error"
+                      }  
+/update-employee:
+  description: 
+  post:
+    body:
+      application/xml:
+        example:
+          <?xml version="1.0" encoding="UTF-8"?>
+            <emp>
+              <empid>100</empid>
+              <empstatus>Active</empstatus>
+            </emp>
+    responses:
+      200:
+        body:
+          application/xml:
+            example:          
+             <?xml version="1.0" encoding="UTF-8"?>
+              <Response>
+                <Status>200</Status>
+                <Message>Active</Message>
+              </Response>
+      500:
+        body:
+          application/xml:
+            example:
+              <?xml version="1.0" encoding="UTF-8"?>
+              <Response>
+                <Status>500</Status>
+                <Message>Internal Server Error</Message>
+              </Response>
+/fetch-employee:
+  get:
+    queryParameters:
+      empid:
+        displayName: empid
+        required: true
+        type: integer
+        example:  9900
+      status:
+        displayName: status
+        required: false
+        type: string
+        example:  A
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "empid":200,
+                "empname":"Anil",
+                "status":"Active"
+              }
+      404:
+        body:
+          application/json:
+            example:
+              {
+                "Status":404,
+                "Message":"No Employee Found"
+              }
+      500:
+        body:
+          application/json:
+            example:
+              {
+                "Status":500,
+                "Message":"Internal Server Error"
+              }
+/delete-employee/{empid}:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "empid":200,
+                "empname":"Anil",
+                "status":"Active"
+              }
+      404:
+        body:
+          application/json:
+            example:
+              {
+                "Status":404,
+                "Message":"No Employee Found"
+              }
+      500:
+        body:
+          application/json:
+            example:
+              {
+                "Status":500,
+                "Message":"Internal Server Error"
+              }

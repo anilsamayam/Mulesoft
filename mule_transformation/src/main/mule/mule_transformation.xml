@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="mule_transformationFlow" doc:id="72207465-37b6-4582-83b5-4430753ab5e8" >
+		<ee:transform doc:name="Transform Json to All Types" doc:id="26d349c2-72c2-49cd-8904-cd0df7f95fec" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv
+---
+{
+	empID: payload.empID,
+	empName: payload.empName,
+	empEmail: payload.empEmail,
+	empStatus: payload.empStatus
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="mule_transformationFlow1" doc:id="f7b51f08-7896-4bc9-9193-0c7d9e0dfd41" >
+		<ee:transform doc:name="Transform XML to All" doc:id="57b72a53-5f44-4d65-95d9-54829d316ba9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	item: {
+		"type": payload.book.author.@loc,
+		price: payload.book.price,
+		properties: {
+			title: payload.book.title,
+			author: payload.book.author,
+			year: payload.book.year,
+			lungage: payload.book.title.@lang
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

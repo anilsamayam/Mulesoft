@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="768eb60d-2a38-4a8e-a989-ec89cc12e359" basePath="/hello" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="hello_mule_prjFlow" doc:id="171b4ce2-8b09-4719-ab73-aadc3716aa61" >
+		<http:listener doc:name="Listener" doc:id="79752d0a-ac79-40ad-b7d9-bc00ec14527d" config-ref="HTTP_Listener_config" path="/hel" outputMimeType="application/json" allowedMethods="GET"/>
+		<set-payload value="I Am Payload" doc:name="Set Payload" doc:id="bb9f6a15-d1b3-494f-947f-e7c300792e7c" />
+		<set-variable value="1" doc:name="Set Variable" doc:id="e3665fe9-3858-4f5c-b630-9df971ffd061" variableName="A"/>
+		<set-variable value="2" doc:name="Set Variable" doc:id="49997d46-779a-4cb9-8567-b10748d45390" variableName="B"/>
+		<logger level="INFO" doc:name="Logger" doc:id="ca55c120-9029-4378-b764-30371ff95e7b" message="logger info1"/>
+	</flow>
+</mule>

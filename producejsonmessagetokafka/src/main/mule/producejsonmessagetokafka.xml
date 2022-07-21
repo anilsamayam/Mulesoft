@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:kafka="http://www.mulesoft.org/schema/mule/kafka" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/kafka http://www.mulesoft.org/schema/mule/kafka/current/mule-kafka.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<kafka:producer-config name="Apache_Kafka_Producer_configuration" doc:name="Apache Kafka Producer configuration" doc:id="0a9c8db8-b3fd-457b-b9c8-d0aa55d80715" >
+		<kafka:producer-plaintext-connection producerAck="ALL">
+			<kafka:bootstrap-servers >
+				<kafka:bootstrap-server value="localhost:9092" />
+			</kafka:bootstrap-servers>
+		</kafka:producer-plaintext-connection>
+	</kafka:producer-config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="86c19025-99e1-4a04-b41d-624d7898f361" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<kafka:consumer-config name="Apache_Kafka_Consumer_configuration" doc:name="Apache Kafka Consumer configuration" doc:id="650d0314-c466-4ade-b398-43f0e39b2586" >
+		<kafka:consumer-plaintext-connection>
+			<kafka:bootstrap-servers >
+				<kafka:bootstrap-server value="localhost:9092" />
+			</kafka:bootstrap-servers>
+			<kafka:topic-patterns >
+				<kafka:topic-pattern value="mulesoft_poc" />
+			</kafka:topic-patterns>
+		</kafka:consumer-plaintext-connection>
+	</kafka:consumer-config>
+	<flow name="producejsonmessagetokafkaFlow" doc:id="fd9d15e1-f8b9-4253-b56b-05da26396c60" >
+		<http:listener doc:name="Listener" doc:id="27581f5a-9034-4958-9b07-e9d83504b5d2" config-ref="HTTP_Listener_config" path="/produceJsonMessage"/>
+		<kafka:publish doc:name="Publish" doc:id="ab6b44a2-97eb-41a0-b545-9a5c2acfa604" config-ref="Apache_Kafka_Producer_configuration" topic="mulesoft_poc"/>
+		<ee:transform doc:name="Transform Message" doc:id="476913b3-e854-4be3-ad03-4f20e0294761" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="producejsonmessagetokafkaFlow1" doc:id="c36f9dc2-61cf-4130-985f-33ce7b5e2760" >
+		<kafka:message-listener doc:name="Message listener" doc:id="448467d3-8a15-4b6b-b307-ceb133ce7a42" config-ref="Apache_Kafka_Consumer_configuration" pollTimeout="3" pollTimeoutTimeUnit="MINUTES" ackMode="AUTO"/>
+		<logger level="INFO" doc:name="Logger" doc:id="a20eb960-7b9e-4794-97e7-69ca67589341" message="Message Received From Kafka Topic:#[payload]"/>
+		<set-payload value='#[read(payload,"application/json")]' doc:name="Set Payload" doc:id="77b03131-1588-4288-adeb-7cf6d4d78e6b" />
+		<ee:transform doc:name="Transform Message" doc:id="c89e699f-b1b0-46e8-83a8-c77401c7f298" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map{
+	CustomerName:$.Firstname,
+	CustomerID:$.Customerid
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<file:write doc:name="Write" doc:id="8d7dd50e-7ac3-43ac-8880-a9201202bf97" path="D:\testfiles\kafkadata.txt"/>
+	</flow>
+</mule>
